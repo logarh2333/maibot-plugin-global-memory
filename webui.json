@@ -1,0 +1,231 @@
+{
+  "schema_version": 2,
+  "workspace_title": "全局记忆",
+  "pages": [
+    {
+      "id": "overview",
+      "title": "记忆概览",
+      "description": "查看记忆库统计与全部记忆列表。",
+      "placement": "workspace",
+      "icon": "database",
+      "mode": "declarative",
+      "queries": {
+        "summary": { "api": "webui_summary" },
+        "list": { "api": "webui_list" }
+      },
+      "content": [
+        {
+          "type": "grid",
+          "columns": 4,
+          "children": [
+            { "type": "stat", "label": "记忆总数", "value": { "source": "summary", "field": "total" } },
+            { "type": "stat", "label": "置顶数量", "value": { "source": "summary", "field": "pinned" } },
+            { "type": "stat", "label": "下一个编号", "value": { "source": "summary", "field": "next_id" } },
+            { "type": "stat", "label": "容量上限", "value": { "source": "summary", "field": "max_memories" } }
+          ]
+        },
+        {
+          "type": "card",
+          "label": "全部记忆",
+          "children": [
+            {
+              "type": "table",
+              "value": { "source": "list", "field": "memories" },
+              "columns": [
+                { "field": "id", "label": "编号" },
+                { "field": "title", "label": "标题" },
+                { "field": "summary", "label": "简介" },
+                { "field": "keywords", "label": "关键词" },
+                { "field": "pinned", "label": "置顶" },
+                { "field": "updated_at", "label": "更新时间" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "create",
+      "title": "新建记忆",
+      "description": "创建一条新的全局记忆。",
+      "placement": "sidebar",
+      "icon": "puzzle",
+      "mode": "declarative",
+      "queries": {
+        "summary": { "api": "webui_summary" }
+      },
+      "actions": {
+        "create": {
+          "api": "webui_create",
+          "parameters": {
+            "title": { "type": "string", "required": true, "max_length": 120 },
+            "content": { "type": "string", "required": true, "max_length": 20000 },
+            "keywords": { "type": "string", "required": false, "max_length": 300 },
+            "summary": { "type": "string", "required": false, "max_length": 300 },
+            "pinned": { "type": "boolean", "required": false }
+          }
+        }
+      },
+      "content": [
+        {
+          "type": "card",
+          "label": "新建记忆",
+          "children": [
+            { "type": "input", "name": "title", "label": "标题" },
+            { "type": "input", "name": "keywords", "label": "关键词（逗号分隔）" },
+            { "type": "input", "name": "summary", "label": "简介（留空自动截取）" },
+            { "type": "switch", "name": "pinned", "label": "置顶", "value": false },
+            { "type": "input", "name": "content", "label": "正文内容" },
+            { "type": "button", "label": "创建记忆", "action": "create", "variant": "primary" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "edit",
+      "title": "编辑记忆",
+      "description": "修改、置顶或删除已有记忆。",
+      "placement": "sidebar",
+      "icon": "settings",
+      "mode": "declarative",
+      "queries": {
+        "summary": { "api": "webui_summary" },
+        "list": { "api": "webui_list" }
+      },
+      "actions": {
+        "update": {
+          "api": "webui_update",
+          "parameters": {
+            "memory_id": { "type": "string", "required": true, "max_length": 20 },
+            "title": { "type": "string", "required": false, "max_length": 120 },
+            "content": { "type": "string", "required": false, "max_length": 20000 },
+            "keywords": { "type": "string", "required": false, "max_length": 300 },
+            "summary": { "type": "string", "required": false, "max_length": 300 },
+            "pinned": { "type": "boolean", "required": false }
+          }
+        },
+        "toggle_pin": {
+          "api": "webui_toggle_pin",
+          "parameters": {
+            "memory_id": { "type": "string", "required": true, "max_length": 20 }
+          }
+        },
+        "delete": {
+          "api": "webui_delete",
+          "confirmation": "确认删除这条记忆？删除后不可恢复。",
+          "parameters": {
+            "memory_id": { "type": "string", "required": true, "max_length": 20 }
+          }
+        }
+      },
+      "content": [
+        {
+          "type": "card",
+          "label": "编辑 / 置顶 / 删除",
+          "children": [
+            { "type": "input", "name": "memory_id", "label": "记忆编号（如 M-0001）" },
+            { "type": "input", "name": "title", "label": "新标题（留空不改）" },
+            { "type": "input", "name": "keywords", "label": "新关键词（留空不改）" },
+            { "type": "input", "name": "summary", "label": "新简介（留空不改）" },
+            { "type": "input", "name": "content", "label": "新正文（留空不改）" },
+            { "type": "switch", "name": "pinned", "label": "置顶", "value": false },
+            { "type": "button", "label": "保存修改", "action": "update", "variant": "primary" },
+            { "type": "button", "label": "切换置顶", "action": "toggle_pin", "variant": "muted" },
+            { "type": "button", "label": "删除该记忆", "action": "delete", "variant": "danger" }
+          ]
+        },
+        {
+          "type": "card",
+          "label": "当前记忆列表",
+          "children": [
+            {
+              "type": "table",
+              "value": { "source": "list", "field": "memories" },
+              "columns": [
+                { "field": "id", "label": "编号" },
+                { "field": "title", "label": "标题" },
+                { "field": "summary", "label": "简介" },
+                { "field": "pinned", "label": "置顶" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "search",
+      "title": "搜索记忆",
+      "description": "按关键词搜索记忆库。",
+      "placement": "sidebar",
+      "icon": "list",
+      "mode": "declarative",
+      "queries": {
+        "result": { "api": "webui_search" }
+      },
+      "content": [
+        {
+          "type": "card",
+          "label": "搜索",
+          "children": [
+            { "type": "input", "name": "query", "label": "搜索词（空格分隔多个关键词）" },
+            {
+              "type": "table",
+              "value": { "source": "result", "field": "memories" },
+              "columns": [
+                { "field": "id", "label": "编号" },
+                { "field": "title", "label": "标题" },
+                { "field": "summary", "label": "简介" },
+                { "field": "keywords", "label": "关键词" },
+                { "field": "pinned", "label": "置顶" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "backup",
+      "title": "导入导出",
+      "description": "备份或迁移记忆库。",
+      "placement": "sidebar",
+      "icon": "database",
+      "mode": "declarative",
+      "queries": {
+        "summary": { "api": "webui_summary" }
+      },
+      "actions": {
+        "import": {
+          "api": "webui_import",
+          "confirmation": "确认导入？导入会新增记忆，不会覆盖已有内容。",
+          "parameters": {
+            "payload": { "type": "string", "required": true, "max_length": 65536 }
+          }
+        }
+      },
+      "content": [
+        {
+          "type": "card",
+          "label": "导出",
+          "children": [
+            {
+              "type": "text",
+              "value": "调用 webui_export 接口可获取全部记忆的 JSON，用于备份或迁移到另一台机器。"
+            }
+          ]
+        },
+        {
+          "type": "card",
+          "label": "导入",
+          "children": [
+            { "type": "input", "name": "payload", "label": "粘贴导出的 JSON 内容" },
+            { "type": "button", "label": "开始导入", "action": "import", "variant": "primary" },
+            {
+              "type": "text",
+              "value": "导入只新增，不覆盖。标题或正文为空的条目会被跳过。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
