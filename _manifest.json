@@ -1,0 +1,38 @@
+{
+  "manifest_version": 2,
+  "id": "cn.logarh.global-memory",
+  "version": "1.0.0",
+  "name": "全局记忆",
+  "description": "让模型自主创建、维护和检索全局记忆文件。每轮只注入记忆索引与简介，模型按需读取具体内容，并提供 WebUI 管理页面。",
+  "author": {
+    "name": "logarh",
+    "url": "https://github.com/logarh2333"
+  },
+  "license": "MIT",
+  "urls": {
+    "repository": "https://github.com/logarh2333/maibot-plugin-global-memory"
+  },
+  "host_application": {
+    "min_version": "1.3.0",
+    "max_version": "999.999.999"
+  },
+  "sdk": {
+    "min_version": "2.5.1",
+    "max_version": "999.999.999"
+  },
+  "dependencies": [],
+  "plugin_type": "data",
+  "display": {
+    "icon": {
+      "type": "lucide",
+      "value": "notebook"
+    }
+  },
+  "capabilities": [],
+  "i18n": {
+    "default_locale": "zh-CN",
+    "supported_locales": [
+      "zh-CN"
+    ]
+  }
+}
